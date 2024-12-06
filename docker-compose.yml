@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    privileged: true
+    container_name: backend
+    networks:
+      - dev-network
+    depends_on:
+      - redis
+    ports:
+      - "8080:8080"
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    networks:
+      - dev-network
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  dev-network:
+    driver: bridge
